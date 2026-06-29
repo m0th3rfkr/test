@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campaña de lanzamiento — Wisdom Wide Web</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fff; color: #0b0b0b; padding: 2rem; max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 20px; font-weight: 500; margin-bottom: 4px; }
+  p.sub { font-size: 13px; color: #52514e; margin-bottom: 24px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 12px; font-size: 12px; color: #52514e; }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .chart-wrap { position: relative; width: 100%; height: 500px; }
+  .note { font-size: 11px; color: #898781; margin-top: 10px; }
+  .supuestos { margin-top: 32px; border-top: 1px solid #e1e0d9; padding-top: 20px; }
+  .supuestos h2 { font-size: 15px; font-weight: 500; margin-bottom: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 8px 12px; background: #f5f5f3; color: #52514e; font-weight: 500; border-bottom: 1px solid #e1e0d9; }
+  td { padding: 8px 12px; border-bottom: 1px solid #f0efec; }
+  tr.www-row td { background: #E1F5EE; font-weight: 500; color: #085041; }
+  @media (prefers-color-scheme: dark) {
+    body { background: #1a1a19; color: #fff; }
+    p.sub, .legend, .note { color: #c3c2b7; }
+    th { background: #2c2c2a; color: #c3c2b7; border-color: #383835; }
+    td { border-color: #2c2c2a; }
+    .supuestos { border-color: #2c2c2a; }
+    tr.www-row td { background: #04342C; color: #9FE1CB; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Campaña de lanzamiento — 1 mes completo</h1>
+<p class="sub">Comparativa de plataformas: coordinación incluida vs costo total · Tamaño = capacidad de cubrir la campaña completa · Wisdom Wide Web · Junio 2026</p>
+
+<div class="legend">
+  <span><span class="dot" style="background:#0F6E56;border:2px solid #085041;"></span>Wisdom Wide Web</span>
+  <span><span class="dot" style="background:#2a78d6;"></span>Plataformas premium</span>
+  <span><span class="dot" style="background:#888780;"></span>Marketplaces generales</span>
+  <span><span class="dot" style="background:#eda100;"></span>Agencia tradicional</span>
+  <span style="color:#898781;margin-left:8px;">Tamaño = capacidad de cubrir la campaña completa (%)</span>
+</div>
+
+<div class="chart-wrap">
+  <canvas id="bubble" role="img" aria-label="Gráfica de burbuja. Eje X coordinación 1-5, eje Y costo mensual MXN. WWW: coordinación 5, costo $144K, burbuja grande — mejor relación del mercado.">Comparativa de plataformas para campaña de lanzamiento 1 mes.</canvas>
+</div>
+
+<p class="note">Eje X: nivel de coordinación incluida (1=ninguna, 5=total) · Eje Y: costo total del mes en MXN · Hover para ver detalle de cada plataforma · TC ~$17 MXN/USD · Junio 2026</p>
+
+<div class="supuestos">
+  <h2>Supuestos del escenario — equipo WWW para campaña de lanzamiento</h2>
+  <table>
+    <thead><tr><th>Nivel</th><th>Horas/día</th><th>Días/mes</th><th>Tarifa/hr</th><th>Total mes</th></tr></thead>
+    <tbody>
+      <tr><td>Senior / Director creativo (SR)</td><td>4 hrs</td><td>20 días</td><td>$500 MXN</td><td>$40,000 MXN</td></tr>
+      <tr><td>Mid creative (MID)</td><td>8 hrs</td><td>20 días</td><td>$350 MXN</td><td>$56,000 MXN</td></tr>
+      <tr><td>Junior creativo 1 (JR)</td><td>8 hrs</td><td>20 días</td><td>$150 MXN</td><td>$24,000 MXN</td></tr>
+      <tr><td>Junior creativo 2 (JR)</td><td>8 hrs</td><td>20 días</td><td>$150 MXN</td><td>$24,000 MXN</td></tr>
+      <tr class="www-row"><td>Total equipo WWW</td><td>—</td><td>—</td><td>—</td><td>$144,000 MXN</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const gridColor = isDark ? '#2c2c2a' : '#e1e0d9';
+const mutedColor = '#898781';
+const textColor = isDark ? '#c3c2b7' : '#52514e';
+
+const data = [
+  { label: 'Agencia tradicional', x: 5, y: 450000, r: 95, color: '#eda100', nota: '100% cobertura · equipo dedicado · precio más alto · $300K–$600K/mes' },
+  { label: 'Toptal', x: 4, y: 600000, r: 70, color: '#2a78d6', nota: '75% cobertura · cada perfil por separado · sin coordinación integrada · $400K–$800K/mes' },
+  { label: 'Mayple', x: 4, y: 255000, r: 55, color: '#2a78d6', nota: '60% cobertura · solo marketing/performance · sin diseño creativo · $255K/mes' },
+  { label: 'Wisdom Wide Web', x: 5, y: 144000, r: 95, color: '#0F6E56', nota: '100% cobertura · SR+MID+2JR coordinados · pago garantizado · $144K/mes' },
+  { label: 'Upwork', x: 2, y: 200000, r: 60, color: '#888780', nota: '65% cobertura · cliente coordina solo · sin garantía de coherencia · $120K–$300K/mes' },
+  { label: 'Workana', x: 2, y: 100000, r: 45, color: '#888780', nota: '50% cobertura · cliente coordina solo · ruido alto · $50K–$150K/mes' },
+  { label: 'Fiverr', x: 1, y: 55000, r: 25, color: '#888780', nota: '25% cobertura · gig por gig · sin coherencia creativa · $30K–$80K/mes' },
+  { label: '99designs', x: 1, y: 52000, r: 20, color: '#888780', nota: '20% cobertura · solo diseño · no cubre campaña completa · $25K–$80K/mes' },
+  { label: 'Soyfreelancer', x: 1, y: 40000, r: 15, color: '#888780', nota: '15% cobertura · un freelancer a la vez · sin coordinación · $20K–$60K/mes' },
+];
+
+const datasets = data.map(d => ({
+  label: d.label,
+  data: [{ x: d.x, y: d.y, r: d.r * 0.38 }],
+  backgroundColor: d.color + (d.label === 'Wisdom Wide Web' ? 'ee' : '99'),
+  borderColor: d.label === 'Wisdom Wide Web' ? '#085041' : d.color,
+  borderWidth: d.label === 'Wisdom Wide Web' ? 2.5 : 1,
+  nota: d.nota,
+}));
+
+new Chart(document.getElementById('bubble'), {
+  type: 'bubble',
+  data: { datasets },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: { padding: { top: 20, right: 20, bottom: 10, left: 10 } },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          title: ctx => ctx[0].dataset.label,
+          label: ctx => {
+            const d = data.find(p => p.label === ctx.dataset.label);
+            return d ? d.nota.split(' · ').map(s => '  ' + s) : [];
+          }
+        },
+        backgroundColor: isDark ? '#2c2c2a' : '#fff',
+        borderColor: gridColor,
+        borderWidth: 1,
+        titleColor: isDark ? '#fff' : '#0b0b0b',
+        bodyColor: textColor,
+        padding: 12,
+        titleFont: { weight: '500', size: 13 },
+        bodyFont: { size: 12 },
+      }
+    },
+    scales: {
+      x: {
+        min: 0, max: 6,
+        title: { display: true, text: 'Coordinación incluida (1=ninguna, 5=total)', color: mutedColor, font: { size: 12 } },
+        ticks: { color: mutedColor, stepSize: 1, callback: v => ['','Ninguna','Baja','Media','Alta','Total',''][v] || '' },
+        grid: { color: gridColor }
+      },
+      y: {
+        min: 0, max: 750000,
+        title: { display: true, text: 'Costo total del mes (MXN)', color: mutedColor, font: { size: 12 } },
+        ticks: { color: mutedColor, callback: v => '$' + (v/1000).toFixed(0) + 'K' },
+        grid: { color: gridColor }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
